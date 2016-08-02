@@ -32,81 +32,79 @@ public class LottoDatumUtil {
 
 	public static Date ersterZiehungstag(Date abgabeDatum, boolean isMittwoch, boolean isSamstag,
 			int abgabeSchlussMittwoch, int abgabeSchlussSamstag) {
-		Date result = new Date();
+
 		Calendar cal = new GregorianCalendar();
-		SimpleDateFormat sdf = new SimpleDateFormat("EEEE", Locale.GERMANY);
-		cal.setTime(abgabeDatum);
+		SimpleDateFormat sdf = new SimpleDateFormat("EEEE", Locale.GERMANY); //format festlegen für den Abgabetag
+		cal.setTime(abgabeDatum);	//Abgabedatum zur Arbeitsvariablen zuweisen
 
-		String abgabetag = sdf.format(abgabeDatum);
-		// System.out.println(abgabetag);
+		String abgabetag = sdf.format(abgabeDatum); //Wochentag des Abgabedatums ermitteln
 
-		switch (abgabetag) {
+		switch (abgabetag) {	//Auswerten de Wochentags
 
 		case "Mittwoch":
 			if (isMittwoch)
-				//will Mittwoch spielen
+				// will Mittwoch spielen
 				if (cal.get(Calendar.HOUR_OF_DAY) >= abgabeSchlussMittwoch) {
-					//  ist aber für heute zu spät
-					if (isSamstag) {
-						// möchte auch am Samstag spielen - also gibt es Samstag
-						cal.add(Calendar.DAY_OF_WEEK, bisSamstag(cal));
-					} else {
-						// möchte nicht am Samstag spielen also Mittwoch nächste
-						// Woche
-						cal.add(Calendar.DAY_OF_WEEK, 7);
-					}
+				// ist aber für heute zu spät
+				if (isSamstag) {
+				// möchte auch am Samstag spielen - also gibt es Samstag
+				cal.add(Calendar.DAY_OF_WEEK, bisSamstag(cal));
+				} else {
+				// möchte nicht am Samstag spielen also Mittwoch nächste
+				// Woche
+				cal.add(Calendar.DAY_OF_WEEK, 7);
+				}
 
 				} else {
-					//rechtzeitig für heute
-						
-				} else
-					
-					 if (isSamstag) {
-					 cal.add(Calendar.DAY_OF_WEEK, bisSamstag(cal));
-					 }
-
-				
+				// rechtzeitig für heute
+				// Datum ändert sich nicht
+				}
+			else if (isSamstag) {
+				cal.add(Calendar.DAY_OF_WEEK, bisSamstag(cal));
+			}
 			break;
 
 		case "Samstag":
 			if (isSamstag)
-				//will Samstag spielen
+				// will Samstag spielen
 				if (cal.get(Calendar.HOUR_OF_DAY) >= abgabeSchlussSamstag) {
-					//  ist aber für heute zu spät
-					if (isMittwoch) {
-						// möchte auch am Samstag spielen - also gibt es Mittwoch
-						cal.add(Calendar.DAY_OF_WEEK, bisMittwoch(cal));
-					} else {
-						// möchte nicht am Mittwoch spielen also Samstag nächste
-						// Woche
-						cal.add(Calendar.DAY_OF_WEEK, 7);
-					}
-
+				// ist aber für heute zu spät
+				if (isMittwoch) {
+				// möchte auch am Samstag spielen - also gibt es Mittwoch
+				cal.add(Calendar.DAY_OF_WEEK, bisMittwoch(cal));
 				} else {
-					//rechtzeitig für heute
-						
-				} else
-					
-					 if (isMittwoch) {
-					 cal.add(Calendar.DAY_OF_WEEK, bisMittwoch(cal));
-					 }
-
-				
+				// möchte nicht am Mittwoch spielen also Samstag nächste
+				// Woche
+				cal.add(Calendar.DAY_OF_WEEK, 7);
+				}
+				} else {
+				// rechtzeitig für heute
+				// Datum ändert sich nicht
+				}
+			else if (isMittwoch) {
+				cal.add(Calendar.DAY_OF_WEEK, bisMittwoch(cal));
+			}
 			break;
-		default:
+		default://alle anderen Tage
 			if (isMittwoch & isSamstag) {
+				// beide Tage werden gespielt
 				if (bisMittwoch(cal) < bisSamstag(cal)) {
+					// Mittwoch liegt dichter am Abgebetag als samstag 
 					cal.add(Calendar.DAY_OF_WEEK, bisMittwoch(cal));
 				} else {
+					// Samstag liegt dichter am Abgabetag als mittwoch
 					cal.add(Calendar.DAY_OF_WEEK, bisSamstag(cal));
 				}
 			} else if (isMittwoch) {
+				// nur am mittwoch wird gespielt
 				cal.add(Calendar.DAY_OF_WEEK, bisMittwoch(cal));
 			} else if (isSamstag) {
+				// nur am samstag wird gespielt
 				cal.add(Calendar.DAY_OF_WEEK, bisSamstag(cal));
 			}
 			break;
-		}result=cal.getTime();return result;
-}
+		}
+		return cal.getTime();
+	}
 
 }
